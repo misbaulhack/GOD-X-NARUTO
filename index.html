@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ＮＡＲＵＴＯㅤ㊜</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #D4AF37; /* Golden primary color */
+      --secondary-color: #1a1a1a; /* Dark background */
+      --tertiary-color: #FFD700; /* Bright gold */
+      --text-color: #ffffff; /* White text */
+      --card-bg: rgba(26, 26, 26, 0.8); /* Semi-transparent dark */
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #0F0F0F, #1F1F1F);
+      color: var(--text-color);
+      min-height: 100vh;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--tertiary-color));
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(212, 175, 55, 0.2);
+      border-color: rgba(212, 175, 55, 0.6);
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary-color), var(--tertiary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .header-glow {
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    }
+
+    .btn-gold {
+      background: linear-gradient(90deg, var(--primary-color), var(--tertiary-color));
+      color: #000;
+      font-weight: 600;
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+    }
+
+    .stat-box {
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .stat-box:hover {
+      background: rgba(212, 175, 55, 0.2);
+      transform: translateY(-3px);
+    }
+
+    .history-item {
+      background: rgba(26, 26, 26, 0.6);
+      border-left: 4px solid var(--primary-color);
+      transition: all 0.3s ease;
+    }
+
+    .history-item:hover {
+      background: rgba(212, 175, 55, 0.1);
+      transform: translateX(5px);
+    }
+
+    .win-status {
+      background: rgba(0, 255, 0, 0.1);
+      border: 1px solid rgba(0, 255, 0, 0.3);
+    }
+
+    .loss-status {
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid rgba(255, 0, 0, 0.3);
+    }
+
+    .pending-status {
+      background: rgba(255, 255, 0, 0.1);
+      border: 1px solid rgba(255, 255, 0, 0.3);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1001;
+      max-width: 90%;
+      width: 400px;
+      display: none;
+    }
+
+    .theme-option {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .theme-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.02);
+    }
+
+    .theme-color {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin-right: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .nav-button {
+      background: rgba(26, 26, 26, 0.8);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .nav-button.active {
+      background: linear-gradient(90deg, var(--primary-color), var(--tertiary-color));
+      color: #000;
+    }
+
+    .nav-button i {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, var(--primary-color), var(--tertiary-color));
+      color: #000;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 600;
+      z-index: 999;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+      animation: toastSlide 3s forwards;
+    }
+
+    @keyframes toastSlide {
+      0% { bottom: -50px; opacity: 0; }
+      10% { bottom: 30px; opacity: 1; }
+      90% { bottom: 30px; opacity: 1; }
+      100% { bottom: -50px; opacity: 0; }
+    }
+
+    /* Theme variations */
+    .theme-blue {
+      --primary-color: #3a7bd5;
+      --tertiary-color: #00d2ff;
+    }
+
+    .theme-red {
+      --primary-color: #ed213a;
+      --tertiary-color: #ff512f;
+    }
+
+    .theme-purple {
+      --primary-color: #8e2de2;
+      --tertiary-color: #4a00e0;
+    }
+
+    .theme-emerald {
+      --primary-color: #11998e;
+      --tertiary-color: #38ef7d;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="text-center py-6">
+    <h1 class="text-4xl font-bold gradient-text header-glow mb-2">ＮＡＲＵＴＯ</h1>
+    <p class="text-sm opacity-80">AI - POWERED PREDICTION SYSTEM</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 container mx-auto px-4 pb-24">
+    <!-- Prediction Card -->
+    <div class="card p-6 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Period -->
+        <div class="bg-gradient-to-br from-[var(--primary-color)]/10 to-[var(--tertiary-color)]/10 p-5 rounded-xl border border-[var(--primary-color)]/20">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="w-10 h-10 rounded-full bg-[var(--primary-color)]/20 flex items-center justify-center">
+              <i class="fas fa-calendar-alt text-[var(--primary-color)]"></i>
+            </div>
+            <h2 class="text-lg font-semibold">PERIOD</h2>
+          </div>
+          <p id="currentPeriod" class="text-3xl font-bold text-center py-3">-</p>
+        </div>
+        
+        <!-- Prediction -->
+        <div class="bg-gradient-to-br from-[var(--primary-color)]/10 to-[var(--tertiary-color)]/10 p-5 rounded-xl border border-[var(--primary-color)]/20">
+          <div class="flex items-center space-x-3 mb-3">
+            <div class="w-10 h-10 rounded-full bg-[var(--primary-color)]/20 flex items-center justify-center">
+              <i class="fas fa-lightbulb text-[var(--primary-color)]"></i>
+            </div>
+            <h2 class="text-lg font-semibold">PREDICTION</h2>
+          </div>
+          <p id="currentPrediction" class="text-3xl font-bold text-center py-3 gradient-text">-</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Dashboard -->
+    <div class="card p-6 mb-6">
+      <h2 class="text-2xl font-bold mb-6 text-center gradient-text">ANALYSIS DASHBOARD</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="stat-box p-4 text-center">
+          <p class="text-sm opacity-80 mb-1">WIN</p>
+          <p id="wins" class="text-2xl font-bold">0</p>
+        </div>
+        <div class="stat-box p-4 text-center">
+          <p class="text-sm opacity-80 mb-1">LOSS</p>
+          <p id="losses" class="text-2xl font-bold">0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="card p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold gradient-text">PREDICTION HISTORY</h2>
+        <button id="clearHistoryBtn" class="btn-gold px-4 py-2 rounded-full text-sm">
+          <i class="fas fa-trash mr-2"></i> CLEAR
+        </button>
+      </div>
+      <div id="historyContainer" class="space-y-3"></div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-[var(--secondary-color)] border-t border-[var(--primary-color)]/20 py-2 px-4">
+    <div class="flex justify-around max-w-md mx-auto">
+      <button id="homeBtn" class="nav-button active">
+        <i class="fas fa-home"></i>
+        <span class="text-xs">HOME</span>
+      </button>
+      <button id="historyBtn" class="nav-button">
+        <i class="fas fa-history"></i>
+        <span class="text-xs">HISTORY</span>
+      </button>
+      <button id="themeBtn" class="nav-button">
+        <i class="fas fa-palette"></i>
+        <span class="text-xs">THEMES</span>
+      </button>
+      <button id="infoBtn" class="nav-button">
+        <i class="fas fa-info-circle"></i>
+        <span class="text-xs">INFO</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Clear History Modal -->
+  <div id="clearHistoryModal" class="modal-overlay"></div>
+  <div id="clearHistoryModalContent" class="modal-content p-6">
+    <h3 class="text-xl font-bold mb-4 gradient-text text-center">Confirm Clear History</h3>
+    <p class="text-center mb-6 opacity-80">Are you sure you want to delete all prediction history? This action cannot be undone.</p>
+    <div class="flex justify-center space-x-4">
+      <button id="confirmClear" class="btn-gold px-6 py-2 rounded-full">Yes</button>
+      <button id="cancelClear" class="bg-gray-600 px-6 py-2 rounded-full">No</button>
+    </div>
+  </div>
+
+  <!-- Theme Modal -->
+  <div id="themeModal" class="modal-overlay"></div>
+  <div id="themeModalContent" class="modal-content p-6">
+    <h3 class="text-xl font-bold mb-4 gradient-text text-center">SELECT THEME</h3>
+    <div class="mb-4">
+      <div class="theme-option" data-theme="default">
+        <div class="theme-color" style="background: #D4AF37"></div>
+        <span>GOLDEN</span>
+      </div>
+      <div class="theme-option" data-theme="blue">
+        <div class="theme-color" style="background: #3a7bd5"></div>
+        <span>BLUE</span>
+      </div>
+      <div class="theme-option" data-theme="red">
+        <div class="theme-color" style="background: #ed213a"></div>
+        <span>RED</span>
+      </div>
+      <div class="theme-option" data-theme="purple">
+        <div class="theme-color" style="background: #8e2de2"></div>
+        <span>PURPLE</span>
+      </div>
+      <div class="theme-option" data-theme="emerald">
+        <div class="theme-color" style="background: #11998e"></div>
+        <span>EMERALD</span>
+      </div>
+    </div>
+    <button id="closeThemeModal" class="w-full bg-gray-600 py-2 rounded-full">CLOSE</button>
+  </div>
+
+  <script>
+    // Theme Management
+    const themes = {
+      default: {
+        primary: '#D4AF37',
+        secondary: '#1a1a1a',
+        tertiary: '#FFD700',
+        text: '#ffffff',
+        cardBg: 'rgba(26, 26, 26, 0.8)'
+      },
+      blue: {
+        primary: '#3a7bd5',
+        secondary: '#1a1a1a',
+        tertiary: '#00d2ff',
+        text: '#ffffff',
+        cardBg: 'rgba(26, 26, 26, 0.8)'
+      },
+      red: {
+        primary: '#ed213a',
+        secondary: '#1a1a1a',
+        tertiary: '#ff512f',
+        text: '#ffffff',
+        cardBg: 'rgba(26, 26, 26, 0.8)'
+      },
+      purple: {
+        primary: '#8e2de2',
+        secondary: '#1a1a1a',
+        tertiary: '#4a00e0',
+        text: '#ffffff',
+        cardBg: 'rgba(26, 26, 26, 0.8)'
+      },
+      emerald: {
+        primary: '#11998e',
+        secondary: '#1a1a1a',
+        tertiary: '#38ef7d',
+        text: '#ffffff',
+        cardBg: 'rgba(26, 26, 26, 0.8)'
+      }
+    };
+
+    function applyTheme(themeName) {
+      const theme = themes[themeName];
+      document.documentElement.style.setProperty('--primary-color', theme.primary);
+      document.documentElement.style.setProperty('--secondary-color', theme.secondary);
+      document.documentElement.style.setProperty('--tertiary-color', theme.tertiary);
+      document.documentElement.style.setProperty('--text-color', theme.text);
+      document.documentElement.style.setProperty('--card-bg', theme.cardBg);
+      document.body.className = `min-h-screen flex flex-col ${themeName}`;
+      showToast(`Theme changed to ${themeName.charAt(0).toUpperCase() + themeName.slice(1)}`);
+    }
+
+    // Navigation Functionality
+    const navButtons = document.querySelectorAll('.nav-button');
+    const mainContent = document.querySelector('main');
+    const predictionCard = document.querySelector('.card');
+    const dashboardCard = document.querySelectorAll('.card')[1];
+    const historyCard = document.querySelectorAll('.card')[2];
+
+    function setActiveNav(button) {
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+    }
+
+    navButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        setActiveNav(button);
+        const id = button.id;
+
+        if (id === 'homeBtn') {
+          mainContent.scrollIntoView({ behavior: 'smooth' });
+        } else if (id === 'historyBtn') {
+          historyCard.scrollIntoView({ behavior: 'smooth' });
+        } else if (id === 'themeBtn') {
+          document.getElementById('themeModal').style.display = 'block';
+          document.getElementById('themeModalContent').style.display = 'block';
+        } else if (id === 'infoBtn') {
+          showToast('More features coming soon!');
+        }
+      });
+    });
+
+    // Modal Handling
+    const clearHistoryModal = document.getElementById('clearHistoryModal');
+    const clearHistoryModalContent = document.getElementById('clearHistoryModalContent');
+    const themeModal = document.getElementById('themeModal');
+    const themeModalContent = document.getElementById('themeModalContent');
+    const themeOptions = document.querySelectorAll('.theme-option');
+
+    document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+      clearHistoryModal.style.display = 'block';
+      clearHistoryModalContent.style.display = 'block';
+    });
+
+    document.getElementById('confirmClear').addEventListener('click', () => {
+      clearHistory();
+      clearHistoryModal.style.display = 'none';
+      clearHistoryModalContent.style.display = 'none';
+      showToast('History cleared successfully');
+    });
+
+    document.getElementById('cancelClear').addEventListener('click', () => {
+      clearHistoryModal.style.display = 'none';
+      clearHistoryModalContent.style.display = 'none';
+    });
+
+    document.getElementById('closeThemeModal').addEventListener('click', () => {
+      themeModal.style.display = 'none';
+      themeModalContent.style.display = 'none';
+    });
+
+    themeOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const theme = option.getAttribute('data-theme');
+        applyTheme(theme);
+        themeModal.style.display = 'none';
+        themeModalContent.style.display = 'none';
+      });
+    });
+
+    // Close modals when clicking outside
+    [clearHistoryModal, themeModal].forEach(modal => {
+      modal.addEventListener('click', () => {
+        modal.style.display = 'none';
+        if (modal === clearHistoryModal) {
+          clearHistoryModalContent.style.display = 'none';
+        } else {
+          themeModalContent.style.display = 'none';
+        }
+      });
+    });
+
+    // Core Application Logic
+    let historyData = [];
+    let lastFetchedPeriod = null;
+    let lastResult = null;
+    let lastPrediction = null;
+    let lastStatus = null;
+    let lastOppositeNumber = null;
+    let globalPrediction = null;
+    let streak = 0;
+    let winLevel = 0;
+    let consecutiveLosses = 0;
+    const MAX_WIN_LEVEL = 3;
+
+    function getOppositeNumber(prediction) {
+      const small = [0, 1, 2, 3, 4];
+      const big = [5, 6, 7, 8, 9];
+      let arr = prediction === "BIG" ? small : big;
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function ultraAIPredict(history) {
+      if (history.length < 3) {
+        return { prediction: Math.random() > 0.5 ? "BIG" : "SMALL", confidence: 0.35 + Math.random() * (1 - 0.35), logic: 0 };
+      }
+
+      const recent = history.filter(h => h.resultType !== "-").slice(0, 10);
+      const predictions = [];
+
+      // Streak detection
+      let lastStreakType = recent[0].resultType;
+      let streakLength = 1;
+      for (let i = 1; i < recent.length; i++) {
+        if (recent[i].resultType === lastStreakType) {
+          streakLength++;
+        } else {
+          break;
+        }
+      }
+      if (streakLength >= 3) {
+        predictions.push({
+          prediction: lastStreakType === "BIG" ? "SMALL" : "BIG",
+          confidence: Math.min(90, 70 + (streakLength * 5)),
+          logic: 1
+        });
+      }
+
+      // Weighted probability
+      const lookback = Math.min(15, recent.length);
+      const bigCount = recent.slice(0, lookback).filter(r => r.resultType === "BIG").length;
+      const bigPercent = (bigCount / lookback) * 100;
+      if (Math.abs(bigPercent - 50) > 20) {
+        predictions.push({
+          prediction: bigPercent > 50 ? "SMALL" : "BIG",
+          confidence: Math.min(90, Math.abs(bigPercent - 50) + 40),
+          logic: 8
+        });
+      }
+
+      // Loss recovery
+      if (consecutiveLosses >= 2) {
+        predictions.push({
+          prediction: lastPrediction === "BIG" ? "SMALL" : "BIG",
+          confidence: 75 + (consecutiveLosses * 5),
+          logic: 22
+        });
+      }
+
+      // Default strategy if no strong patterns
+      if (predictions.length === 0) {
+        predictions.push({
+          prediction: recent[0].resultType === "BIG" ? "SMALL" : "BIG",
+          confidence: 60,
+          logic: 12
+        });
+      }
+
+      // Select best prediction
+      let bestPrediction = predictions.reduce((best, current) => 
+        current.confidence > best.confidence ? current : best, predictions[0]);
+
+      // Win level management
+      if (winLevel >= MAX_WIN_LEVEL) {
+        bestPrediction.prediction = bestPrediction.prediction === "BIG" ? "SMALL" : "BIG";
+        bestPrediction.confidence = 0.35;
+        winLevel = 0;
+      }
+
+      return bestPrediction;
+    }
+
+    function updateLastStatus(actualNumber) {
+      const match = actualNumber == lastOppositeNumber || (actualNumber >= 5 ? 'BIG' : 'SMALL') === lastPrediction;
+      lastResult = actualNumber >= 5 ? 'BIG' : 'SMALL';
+      lastStatus = match ? 'WIN' : 'LOSS';
+
+      if (match) {
+        winLevel = Math.min(winLevel + 1, MAX_WIN_LEVEL);
+        streak = streak + 1;
+        consecutiveLosses = 0;
+      } else {
+        winLevel = 0;
+        streak = 0;
+        consecutiveLosses++;
+      }
+
+      return lastStatus;
+    }
+
+    async function fetchGameResult() {
+      try {
+        let response = await fetch("https://crbbb.com/api/webapi/GetNoaverageEmerdList", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pageSize: 10,
+            pageNo: 1,
+            typeId: 30,
+            language: 0,
+            random: "62d02162c2234c64b57aa4188c5810b2",
+            signature: "9BF7A245709AA054E231D75C404C6527",
+            timestamp: Math.floor(Date.now() / 1000)
+          })
+        });
+        let data = await response.json();
+        return data?.data?.list?.[0] || null;
+      } catch (e) {
+        console.error("API Error", e);
+        return null;
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.innerText = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    async function updatePrediction() {
+      let result = await fetchGameResult();
+      if (!result || result.issueNumber === lastFetchedPeriod) return;
+
+      if (historyData.length > 0 && historyData[0].resultStatus === "Pending") {
+        const actualNumber = Number(result.number);
+        const status = updateLastStatus(actualNumber);
+        const resultType = actualNumber >= 5 ? 'BIG' : 'SMALL';
+
+        historyData[0].result = actualNumber;
+        historyData[0].resultStatus = status;
+        historyData[0].resultType = resultType;
+        historyData[0].calculation = `Number ${actualNumber} (${resultType})`;
+
+        updateHistory();
+        updateStats();
+      }
+
+      const aiDecision = ultraAIPredict(historyData);
+      lastPrediction = aiDecision.prediction;
+      lastOppositeNumber = getOppositeNumber(lastPrediction);
+      globalPrediction = lastPrediction;
+
+      let nextPeriodFull = (BigInt(result.issueNumber) + 1n).toString();
+      let nextPeriod = nextPeriodFull.slice(-4);
+
+      document.getElementById("currentPeriod").textContent = nextPeriod;
+      document.getElementById("currentPrediction").textContent = globalPrediction || '-';
+
+      historyData.unshift({
+        period: nextPeriod,
+        prediction: globalPrediction,
+        oppositeNumber: lastOppositeNumber,
+        result: "-",
+        resultStatus: "Pending",
+        resultType: "-",
+        calculation: "-"
+      });
+
+      updateHistory();
+      updateStats();
+      lastFetchedPeriod = result.issueNumber;
+    }
+
+    function updateHistory() {
+      const container = document.getElementById("historyContainer");
+      container.innerHTML = historyData.map((item, index) => `
+        <div class="history-item p-4 rounded-lg">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-full bg-[var(--primary-color)]/10 flex items-center justify-center">
+                <i class="fas fa-hashtag text-[var(--primary-color)] text-sm"></i>
+              </div>
+              <div>
+                <p class="text-xs opacity-80">Period</p>
+                <p class="font-semibold">${item.period?.slice(-5) || '-'}</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div class="text-center">
+                <p class="text-xs opacity-80">Prediction</p>
+                <p class="font-semibold ${item.prediction === 'BIG' ? 'text-[var(--tertiary-color)]' : 'text-[var(--primary-color)]'}">${item.prediction || '-'}</p>
+              </div>
+              <div class="w-8 h-8 rounded-full flex items-center justify-center ${item.resultStatus === 'WIN' ? 'win-status' : item.resultStatus === 'LOSS' ? 'loss-status' : 'pending-status'}">
+                <i class="fas ${item.resultStatus === 'WIN' ? 'fa-check text-green-500' : item.resultStatus === 'LOSS' ? 'fa-times text-red-500' : 'fa-clock text-yellow-500 animate-spin'} text-sm"></i>
+              </div>
+              <button class="delete-btn text-sm opacity-70 hover:opacity-100" data-index="${index}">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const index = parseInt(e.currentTarget.getAttribute('data-index'));
+          historyData.splice(index, 1);
+          showToast("Deleted successfully");
+          updateHistory();
+          updateStats();
+        });
+      });
+    }
+
+    function updateStats() {
+      const wins = historyData.filter(item => item.resultStatus === "WIN").length;
+      const losses = historyData.filter(item => item.resultStatus === "LOSS").length;
+
+      document.getElementById("wins").textContent = wins;
+      document.getElementById("losses").textContent = losses;
+    }
+
+    function clearHistory() {
+      historyData = [];
+      streak = 0;
+      winLevel = 0;
+      consecutiveLosses = 0;
+      updateHistory();
+      updateStats();
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      applyTheme('default');
+      setActiveNav(document.getElementById('homeBtn'));
+      updateHistory();
+      updateStats();
+      setInterval(updatePrediction, 5000);
+    });
+  </script>
+</body>
+</html>
